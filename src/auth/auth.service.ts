@@ -6,6 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
   CREDENTIALS_INCORRECT,
+  CREDENTIALS_TAKEN_BY_JWT,
+  CREDENTIALS_TAKEN_PROVIDER_CONFLICT,
   JWT_EXPIRE_TIME,
   JWT_SECRET,
   UNAUTHENTICATED,
@@ -57,7 +59,7 @@ export class AuthService {
     }
   }
 
-  async googleLogin(dto: GoogleLoginDto) {
+  async providersLogin(dto: GoogleLoginDto) {
     try {
       if (!dto) throw new ForbiddenException(UNAUTHENTICATED);
 
@@ -66,12 +68,18 @@ export class AuthService {
       });
 
       if (!user) {
-        const password = dto.providerId;
+        const providerId = dto.providerId;
 
         delete dto.providerId;
 
-        return this.logon({ ...dto, password });
+        return this.logon({ ...dto, password: providerId });
       }
+
+      if (!user.provider)
+        throw new ForbiddenException(CREDENTIALS_TAKEN_BY_JWT);
+
+      if (user.provider !== dto.provider)
+        throw new ForbiddenException(CREDENTIALS_TAKEN_PROVIDER_CONFLICT);
 
       const pwMatches = await argon.verify(user.hash, dto.providerId);
 

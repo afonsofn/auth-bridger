@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, LogonDto } from './dto';
-import { JwtGuard, OauthGuard } from './guards';
+import { JwtGuard, GoogleGuard, FacebookGuard } from './guards';
 import { GetToken, GetUser } from 'src/auth/decorators';
 import { CustomExceptionFilter } from './filters/custom-exception.filter';
 import { Response } from 'express';
@@ -34,17 +34,30 @@ export class AuthController {
     return cookieAccessToken(token, res);
   }
 
+  @Get('google')
+  @UseGuards(GoogleGuard)
+  googleAuth() {}
+
+  @Get('facebook')
+  @UseGuards(FacebookGuard)
+  facebookAuth() {}
+
   @Get('google/callback')
-  @UseGuards(OauthGuard)
-  async googleCallbackAuth(@GetUser() user, @Res() res: Response) {
-    const token = await this.authService.googleLogin(user);
+  @Get('facebook/callback')
+  @UseGuards(GoogleGuard)
+  async googleCallback(@GetUser() user, @Res() res: Response) {
+    const token = await this.authService.providersLogin(user);
 
     return cookieAccessToken(token, res);
   }
 
-  @Get('google')
-  @UseGuards(OauthGuard)
-  googleAuth() {}
+  @Get('facebook/callback')
+  @UseGuards(FacebookGuard)
+  async facebookCallback(@GetUser() user, @Res() res: Response) {
+    const token = await this.authService.providersLogin(user);
+
+    return cookieAccessToken(token, res);
+  }
 
   @Post('logout')
   @UseGuards(JwtGuard)

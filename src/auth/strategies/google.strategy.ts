@@ -6,11 +6,14 @@ import {
   GOOGLE_CALLBACK_URL,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
-  OAUTH_STRATEGY,
+  GOOGLE_STRATEGY,
 } from 'src/utils';
 
 @Injectable()
-export class OauthStrategy extends PassportStrategy(Strategy, OAUTH_STRATEGY) {
+export class GoogleStrategy extends PassportStrategy(
+  Strategy,
+  GOOGLE_STRATEGY,
+) {
   constructor(configService: ConfigService) {
     super({
       clientID: configService.get(GOOGLE_CLIENT_ID),
@@ -28,9 +31,8 @@ export class OauthStrategy extends PassportStrategy(Strategy, OAUTH_STRATEGY) {
   ): Promise<any> {
     const { id, name, emails } = profile;
 
-    console.log(profile);
     const user = {
-      provider: OAUTH_STRATEGY,
+      provider: GOOGLE_STRATEGY,
       providerId: id,
       email: emails[0].value,
       firstName: name.givenName,
