@@ -20,6 +20,10 @@ export class LogonDto {
   @IsString()
   @IsOptional()
   nickname?: string;
+
+  @IsString()
+  @IsOptional()
+  provider?: string;
 }
 
 export class LoginDto {

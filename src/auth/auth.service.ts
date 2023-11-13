@@ -1,10 +1,16 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import * as argon from 'argon2';
 import { GoogleLoginDto, LoginDto, LogonDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
+  CREDENTIALS_FAILED_EMAIL,
+  CREDENTIALS_FAILED_PASSWORD,
   CREDENTIALS_INCORRECT,
   CREDENTIALS_TAKEN_BY_JWT,
   CREDENTIALS_TAKEN_PROVIDER_CONFLICT,
@@ -12,6 +18,8 @@ import {
   JWT_SECRET,
   UNAUTHENTICATED,
   handleExceptions,
+  validateEmail,
+  validatePassword,
 } from 'src/utils';
 import { TokenPayload } from 'src/types';
 import { RedisService } from 'src/redis/redis.service';
@@ -27,6 +35,14 @@ export class AuthService {
 
   async logon(dto: LogonDto): Promise<string> {
     try {
+      if (!validateEmail(dto.email)) {
+        throw new BadRequestException(CREDENTIALS_FAILED_EMAIL);
+      }
+
+      if (!dto.provider && !validatePassword(dto.password)) {
+        throw new BadRequestException(CREDENTIALS_FAILED_PASSWORD);
+      }
+
       const hash = await argon.hash(dto.password);
 
       delete dto.password;
