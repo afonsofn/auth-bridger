@@ -1,73 +1,109 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Auth-Bridger
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Auth-Bridger is a authentication API, developed using NestJS with TypeScript. This project leverages the power of Passport.js for OAuth authentication, supporting Google and Facebook logins, as well as traditional email and password authentication. It utilizes Prisma for database interactions, with PostgreSQL as the underlying database.
 
-## Installation
+The API is designed with security and scalability in mind, using JWT to handle the secure authentication and Redis to manage a list of logged-out tokens, ensuring efficient token invalidation. Additionally, the project is containerized with Docker and Docker Compose, simplifying deployment and environment setup.
 
-```bash
-$ npm install
-```
+## Technologies
 
-## Running the app
+- [NestJS](https://nestjs.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Passport.js](http://www.passportjs.org/)
+- [Prisma](https://www.prisma.io/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Redis](https://redis.io/)
+- [Docker](https://www.docker.com/)
+- [JWT](https://jwt.io/)
 
-```bash
-# development
-$ npm run start
+## Getting Started
 
-# watch mode
-$ npm run start:dev
+To get the project up and running on your local machine, follow these steps:
 
-# production mode
-$ npm run start:prod
-```
+### Prerequisites
 
-## Test
+- Docker and Docker Compose
+- Node.js
 
-```bash
-# unit tests
-$ npm run test
+### Installation
 
-# e2e tests
-$ npm run test:e2e
+1. Clone the repository:
+   ```bash
+   git clone git@github.com:afonsofn/auth-bridger.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd auth-bridger
+   ```
+3. Start the Docker containers (PostgreSQL and Redis):
+   ```bash
+   npm run db:dev:start
+   ```
+4. Deploy Prisma migrations:
+   ```bash
+   npm run prisma:dev:deploy
+   ```
+5. Start the application:
+   ```bash
+   npm run start:dev
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+## Usage
 
-## Support
+The Auth-Bridger API provides several endpoints for handling user authentication and token management. Below are examples of how to use each route:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### User Registration (Logon)
 
-## Stay in touch
+- **Endpoint**: `POST /auth/logon`
+- **Body**:
+  ```json
+  {
+    "email": "john@doe.com",
+    "password": "yourStrongPassword",
+    "firstName": "John",
+    "lastName": "Doe",
+    "nickname": "Lil Joe"
+  }
+  ```
+- **Response**: `On successful registration, a JWT is returned in the response cookies for authentication.`
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### User Login
 
-## License
+- **Endpoint**: `POST /auth/login`
+- **Body**:
+  ```json
+  {
+    "email": "john@doe.com",
+    "password": "yourStrongPassword",
+  }
+  ```
+- **Response**: `On successful registration, a JWT is returned in the response cookies for authentication.`
 
-Nest is [MIT licensed](LICENSE).
+### Google OAuth Authentication
+
+- **Initiate Authentication**: `GET /auth/google`
+  - To begin authentication, open this URL in a browser. This will redirect the user to Google for authentication.
+- **Callback Endpoint**: `GET /auth/google/callback`
+  - Handles the response from Google.
+- **Response**: `On successful registration, a JWT is returned in the response cookies for authentication.`
+
+### Facebook OAuth Authentication
+
+- **Initiate Authentication**: `GET /auth/facebook`
+  - To begin authentication, open this URL in a browser. This will redirect the user to Facebook for authentication.
+- **Callback Endpoint**: `GET /auth/facebook/callback`
+  - Handles the response from Facebook.
+- **Response**: `On successful registration, a JWT is returned in the response cookies for authentication.`
+
+### User Logout
+
+- **Endpoint**: `POST /auth/logout`
+- **Headers**:
+  ```json
+  {
+    "Authorization": "Bearer yourJWTtoken"
+  }
+  ```
+
+### Contributions are welcome :D
