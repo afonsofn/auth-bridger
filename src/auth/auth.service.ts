@@ -1,13 +1,14 @@
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import {
   BadRequestException,
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
 import * as argon from 'argon2';
-import { GoogleLoginDto, LoginDto, LogonDto } from './dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { GoogleLoginDto, LoginDto, LogonDto } from '@/auth/dto';
+import { PrismaService } from '@/prisma/prisma.service';
+import { RedisService } from '@/redis/redis.service';
 import {
   CREDENTIALS_FAILED_EMAIL,
   CREDENTIALS_FAILED_PASSWORD,
@@ -20,9 +21,7 @@ import {
   handleExceptions,
   validateEmail,
   validatePassword,
-} from 'src/utils';
-import { TokenPayload } from 'src/types';
-import { RedisService } from 'src/redis/redis.service';
+} from '@/utils';
 
 @Injectable()
 export class AuthService {
@@ -118,7 +117,10 @@ export class AuthService {
     }
   }
 
-  async generateAccessToken(payload: TokenPayload): Promise<string> {
+  async generateAccessToken(payload: {
+    sub: number;
+    email: string;
+  }): Promise<string> {
     const secret = this.configService.get(JWT_SECRET);
 
     const access_token = await this.jwtService.signAsync(payload, {

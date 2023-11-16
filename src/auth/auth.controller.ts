@@ -7,13 +7,13 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginDto, LogonDto } from './dto';
-import { JwtGuard, GoogleGuard, FacebookGuard } from './guards';
-import { GetToken, GetUser } from 'src/auth/decorators';
-import { CustomExceptionFilter } from './filters/custom-exception.filter';
 import { Response } from 'express';
-import { cookieAccessToken } from 'src/utils';
+import { AuthService } from '@/auth/auth.service';
+import { LoginDto, LogonDto } from '@/auth/dto';
+import { JwtGuard, GoogleGuard, FacebookGuard } from '@/auth/guards';
+import { GetToken, GetUser } from '@/auth/decorators';
+import { CustomExceptionFilter } from '@/auth/filters/custom-exception.filter';
+import { cookieAccessToken } from '@/utils';
 
 @Controller('auth')
 @UseFilters(new CustomExceptionFilter())

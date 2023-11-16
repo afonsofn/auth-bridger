@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
-import { DATABASE_URL } from 'src/utils';
+import { DATABASE_URL } from '@/utils';
 
 @Injectable()
 export class PrismaService extends PrismaClient {

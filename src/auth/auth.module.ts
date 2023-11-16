@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy, GoogleStrategy, FacebookStrategy } from './strategies';
-import { RedisService } from 'src/redis/redis.service';
+import { AuthService } from '@/auth/auth.service';
+import { AuthController } from '@/auth/auth.controller';
+import {
+  JwtStrategy,
+  GoogleStrategy,
+  FacebookStrategy,
+} from '@/auth/strategies';
+import { RedisService } from '@/redis/redis.service';
 
 @Module({
   imports: [JwtModule.register({})],

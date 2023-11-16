@@ -7,7 +7,7 @@ import {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_STRATEGY,
-} from 'src/utils';
+} from '@/utils';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(

@@ -7,7 +7,7 @@ import {
   FACEBOOK_CLIENT_ID,
   FACEBOOK_CLIENT_SECRET,
   FACEBOOK_CALLBACK_URL,
-} from 'src/utils';
+} from '@/utils';
 
 @Injectable()
 export class FacebookStrategy extends PassportStrategy(
